@@ -66,11 +66,16 @@ public class CPUSchedulingGUI extends JFrame {
         // Create a new frame for process details
         JFrame processDetailsFrame = new JFrame("Calculation");
         processDetailsFrame.setLayout(new FlowLayout());
-        processDetailsFrame.setSize(800, 550);
+        processDetailsFrame.setSize(700, 650);
         processDetailsFrame.setLocationRelativeTo(null);
 
         // Create a table model for process details
-        DefaultTableModel tableModel = new DefaultTableModel();
+        DefaultTableModel tableModel = new DefaultTableModel(){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return column != 0;
+            }
+        };
         tableModel.addColumn("Process");
         tableModel.addColumn("Arrival Time");
         tableModel.addColumn("Burst Time");
@@ -89,31 +94,36 @@ public class CPUSchedulingGUI extends JFrame {
         JPanel buttonPanel = new JPanel();
         JPanel displayPanel = new JPanel();
 
+        JLabel warning = new JLabel("NOTE: Please press ENTER after filling up the table!!!");
+
         JScrollPane tablescroll = new JScrollPane(processTable);
         tablescroll.setPreferredSize(new Dimension(400, 200));
         tablescroll.setBorder( new TitledBorder("Process Table") );
 
         JScrollPane displayscroll = new JScrollPane(display);
-        displayscroll.setPreferredSize(new Dimension(700, 250));
+        displayscroll.setPreferredSize(new Dimension(600, 300));
         displayscroll.setBorder( new TitledBorder("Output:") );
 
         JButton calculate = new JButton("Calculate");
 
         buttonPanel.add(new JLabel("Select Algorithm:"));
+        buttonPanel.add(algorithmComboBox);
+
         buttonPanel.add(new JLabel("Quatum:"));
+        buttonPanel.add(quantumTextField);
 
         tablePanel.add(tablescroll);
-        buttonPanel.add(algorithmComboBox);
-        buttonPanel.add(quantumTextField);
         buttonPanel.add(calculate);
         displayPanel.add(displayscroll);
 
         processDetailsFrame.add(tablePanel, BorderLayout.NORTH);
-        processDetailsFrame.add(buttonPanel);
+        processDetailsFrame.add(warning);
+        processDetailsFrame.add(buttonPanel, BorderLayout.CENTER);
         processDetailsFrame.add(displayPanel, BorderLayout.SOUTH);
 
         calculate.addActionListener(new CalculateListener());
 
+        processDetailsFrame.setResizable(false);
         processDetailsFrame.setVisible(true);
     }
 
