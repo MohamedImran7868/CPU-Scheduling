@@ -66,7 +66,7 @@ public class CPUSchedulingGUI extends JFrame {
         // Create a new frame for process details
         JFrame processDetailsFrame = new JFrame("Calculation");
         processDetailsFrame.setLayout(new FlowLayout());
-        processDetailsFrame.setSize(800, 500);
+        processDetailsFrame.setSize(800, 550);
         processDetailsFrame.setLocationRelativeTo(null);
 
         // Create a table model for process details
@@ -79,10 +79,6 @@ public class CPUSchedulingGUI extends JFrame {
         // Populate the table with rows based on the number of processes
         for (int i = 0; i < numberOfProcesses; i++) {
             tableModel.addRow(new Object[]{String.format("P%d", i), "", "", ""});
-            used.add(false);
-            finishTimes.add(0);
-            turnTimes.add(0);
-            waitTimes.add(0);
         }
 
         processTable = new JTable(tableModel);
@@ -160,7 +156,6 @@ public class CPUSchedulingGUI extends JFrame {
     public void nonpreemptiveSJF() {
         int time = 0;
         int done = 0;
-        int prev = 0;
     
         while (done != numberOfProcesses) {
             int index = -1;
@@ -189,7 +184,6 @@ public class CPUSchedulingGUI extends JFrame {
                 used.set(index, true);
                 done++;
                 time = finishTimes.get(index);
-                prev = time;
             } else {
                 time++;
             }
@@ -199,7 +193,6 @@ public class CPUSchedulingGUI extends JFrame {
     public void nonpreemptivepriority() {
         int time = 0;
         int done = 0;
-        int prev = 0;
     
         while (done != numberOfProcesses) {
             int index = -1;
@@ -231,7 +224,6 @@ public class CPUSchedulingGUI extends JFrame {
                 used.set(index, true);
                 done++;
                 time = finishTimes.get(index);
-                prev = time;
             } else {
                 time++;
             }
@@ -242,7 +234,6 @@ public class CPUSchedulingGUI extends JFrame {
     public void preemptiveSJF() {
         int time = 0;
         int done = 0;
-        int prev = 0;
     
         while (done != numberOfProcesses) {
             int index = -1;
@@ -271,7 +262,6 @@ public class CPUSchedulingGUI extends JFrame {
                 int b = burstleft.get(index) - 1;
                 burstleft.set(index, b);
                 time++;
-                prev = time;
 
                 if (burstleft.get(index) == 0) {
                     finishTimes.set(index, time);
@@ -293,7 +283,51 @@ public class CPUSchedulingGUI extends JFrame {
     public void roundrobin() {
         // Get number of processes
         quantum = Integer.parseInt(quantumTextField.getText());
-        
+        display.append("Quantum: " + quantum);
+
+        Queue<Integer> processQueue = new LinkedList<>();
+        int current_time = 0;
+        int completed = 0;
+        int idx;
+
+        while (completed != numberOfProcesses) {
+            for (int i = 0; i < numberOfProcesses; i++) {
+                if (burstleft.get(i) > 0 && arrivalTimes.get(i) <= current_time && !used.get(i)) {
+                    processQueue.add(i);
+                    used.set(i, true);
+                }
+            }
+
+            if (!processQueue.isEmpty()) {
+                idx = processQueue.poll();
+
+                if (burstleft.get(idx) > quantum) {
+                    burstleft.set(idx, burstleft.get(idx) - quantum);
+                    current_time += quantum;
+                } else {
+                    current_time += burstleft.get(idx);
+                    burstleft.set(idx, 0);
+                    completed++;
+
+                    finishTimes.set(idx, current_time);
+                    turnTimes.set(idx, finishTimes.get(idx) - arrivalTimes.get(idx));
+                    waitTimes.set(idx, turnTimes.get(idx) - burstTimes.get(idx));
+                }
+
+                for (int i = 0; i < numberOfProcesses; i++) {
+                    if (burstleft.get(i) > 0 && arrivalTimes.get(i) <= current_time && !used.get(i)) {
+                        processQueue.add(i);
+                        used.set(i, true);
+                    }
+                }
+
+                if (burstleft.get(idx) > 0) {
+                    processQueue.add(idx);
+                }
+            } else {
+                current_time++;
+            }
+        }
     }
 
     public void save() {
@@ -308,6 +342,10 @@ public class CPUSchedulingGUI extends JFrame {
                 arrivalTimes.add(Integer.parseInt(model.getValueAt(i, 1).toString()));
                 burstTimes.add(Integer.parseInt(model.getValueAt(i, 2).toString()));
                 priorities.add(Integer.parseInt(model.getValueAt(i, 3).toString()));
+                used.add(false);
+                finishTimes.add(0);
+                turnTimes.add(0);
+                waitTimes.add(0);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(null, "There is an invalid input, Please Check!");
                 return;
