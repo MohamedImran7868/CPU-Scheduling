@@ -100,10 +100,10 @@ public class CPUSchedulingGUI extends JFrame {
         JButton calculate = new JButton("Calculate");
 
         buttonPanel.add(new JLabel("Select Algorithm:"));
+        buttonPanel.add(new JLabel("Quatum:"));
 
         tablePanel.add(tablescroll);
         buttonPanel.add(algorithmComboBox);
-        buttonPanel.add(new JLabel("Quatum:"));
         buttonPanel.add(quantumTextField);
         buttonPanel.add(calculate);
         displayPanel.add(displayscroll);
@@ -125,7 +125,7 @@ public class CPUSchedulingGUI extends JFrame {
             save();
 
             String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
-            display.append(selectedAlgorithm + " calculated.\n");
+            display.append(selectedAlgorithm + " calculated:");
 
             if ("Non Preemptive SJF".equals(selectedAlgorithm)) {
                 nonpreemptiveSJF();
@@ -137,13 +137,24 @@ public class CPUSchedulingGUI extends JFrame {
                 roundrobin();
             }
 
-            display.append("\n\n------------------------------------------------------------------------------------------------------------------------------\n");
+            display.append("\n------------------------------------------------------------------------------------------------------------------------------\n");
             display.append("|Process\t|Arrival Time\t|Burst Time\t|Finish Time\t|Turn Time\t|Waiting Time\t|\n");
             display.append("------------------------------------------------------------------------------------------------------------------------------\n");
 
             for (int i = 0; i < numberOfProcesses; i++) {
                 display.append("|" + i + "\t" + arrivalTimes.get(i) + "\t" + burstTimes.get(i) + "\t" + finishTimes.get(i) + "\t" + turnTimes.get(i) + "\t" + waitTimes.get(i) + "\t"+ "|\n");
             }
+
+            float avgturn_time = 0;
+            float avgwait_time = 0;
+            for (int i = 0; i < numberOfProcesses; i++) {
+                avgturn_time += turnTimes.get(i);
+                avgwait_time += waitTimes.get(i);
+            }
+
+            display.append(String.format("Average Turn Around Time: %.2f\n", (avgturn_time/numberOfProcesses)));
+            display.append(String.format("Average Wait Time: %.2f\n\n", (avgwait_time/numberOfProcesses)));
+
             finishTimes.clear();
             waitTimes.clear();
             turnTimes.clear();
