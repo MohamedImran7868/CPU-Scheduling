@@ -94,7 +94,7 @@ public class CPUSchedulingGUI extends JFrame {
         tablescroll.setBorder( new TitledBorder("Process Table") );
 
         JScrollPane displayscroll = new JScrollPane(display);
-        displayscroll.setPreferredSize(new Dimension(700, 700));
+        displayscroll.setPreferredSize(new Dimension(700, 250));
         displayscroll.setBorder( new TitledBorder("Output:") );
 
         JButton calculate = new JButton("Calculate");
