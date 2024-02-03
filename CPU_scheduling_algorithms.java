@@ -313,14 +313,8 @@ public class CPU_scheduling_algorithms extends JFrame {
             for (int i = 0; i < numberOfProcesses; i++) {
                 if (arrivalTimes.get(i) <= time && !used.get(i)) {
                     if (burstTimes.get(i) < min) {
-                        min = burstTimes.get(i);
+                        min = burstleft.get(i);
                         index = i;
-                    }
-                    if (burstTimes.get(i) == min) {
-                        if (arrivalTimes.get(i) < arrivalTimes.get(index)) {
-                            min = burstTimes.get(i);
-                            index = i;
-                        }
                     }
                 }
             }
@@ -346,7 +340,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                     int wait = turnTimes.get(index) - burstTimes.get(index);
                     waitTimes.set(index, wait);
 
-                    used.set(index, true);;
+                    used.set(index, true);
                     done++;
                 }
             } else {
