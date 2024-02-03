@@ -212,10 +212,10 @@ public class CPU_scheduling_algorithms extends JFrame {
             avgwait_time += waitTimes.get(i);
         }
 
-        display.append("Total Turn around time: " + avgturn_time);
-        display.append(String.format("Average Turn Around Time: %.2f\n", (avgturn_time/numberOfProcesses)));
+        display.append("Total Turn Around time: " + avgturn_time);
+        display.append(String.format("\nAverage Turn Around Time: %.2f\n", (avgturn_time/numberOfProcesses)));
         display.append("Total Waiting time: " + avgwait_time);
-        display.append(String.format("Average Wait Time: %.2f\n\n", (avgwait_time/numberOfProcesses)));
+        display.append(String.format("\nAverage Waiting Time: %.2f\n\n", (avgwait_time/numberOfProcesses)));
     }
 
     public void nonpreemptiveSJF() {
