@@ -305,19 +305,33 @@ public class CPU_scheduling_algorithms extends JFrame {
         int time = 0;
         int done = 0;
         int previndex = -1;
+        int start = 0;
     
         while (done != numberOfProcesses) {
             int index = -1;
             int min = 1000;
     
-            for (int i = 0; i < numberOfProcesses; i++) {
-                if (arrivalTimes.get(i) <= time && !used.get(i)) {
-                    if (burstTimes.get(i) < min) {
-                        min = burstleft.get(i);
-                        index = i;
+            if (start == 0) {
+                for (int i = 0; i < numberOfProcesses; i++) {
+                    if (arrivalTimes.get(i) <= time && !used.get(i)) {
+                        if (burstTimes.get(i) < min) {
+                            min = burstTimes.get(i);
+                            index = i;
+                        }
+                    }
+                }
+                start++;
+            } else {
+                for (int i = 0; i < numberOfProcesses; i++) {
+                    if (arrivalTimes.get(i) <= time && !used.get(i)) {
+                        if (burstTimes.get(i) < min) {
+                            min = burstleft.get(i);
+                            index = i;
+                        }
                     }
                 }
             }
+            
     
             if (index != -1) {
                 if (burstleft.get(index) == burstTimes.get(index)) {
