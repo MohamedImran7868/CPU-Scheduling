@@ -111,7 +111,7 @@ public class CPU_scheduling_algorithms extends JFrame {
         tablescroll.setBorder( new TitledBorder("Process Table") );
 
         JScrollPane displayscroll = new JScrollPane(display);
-        displayscroll.setPreferredSize(new Dimension(600, 450));
+        displayscroll.setPreferredSize(new Dimension(600, 475));
         displayscroll.setBorder( new TitledBorder("Output:") );
 
         JButton calculate = new JButton("Calculate");
@@ -145,7 +145,6 @@ public class CPU_scheduling_algorithms extends JFrame {
             save();
 
             String selectedAlgorithm = (String) algorithmComboBox.getSelectedItem();
-            display.append(selectedAlgorithm + " calculated:");
 
             if ("Non Preemptive SJF".equals(selectedAlgorithm)) {
                 nonpreemptiveSJF();
@@ -166,7 +165,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 }
                 roundrobin();
             }
-            print();
+            print(selectedAlgorithm);
 
             finishTimes.clear();
             waitTimes.clear();
@@ -177,7 +176,11 @@ public class CPU_scheduling_algorithms extends JFrame {
         }
     }
 
-    public void print() {
+    public void print(String selectedAlgorithm) {
+        display.append(selectedAlgorithm + " calculated:");
+        if ("Round Robin".equals(selectedAlgorithm)) {
+            display.append("\nQuantum: " + quantum);
+        }
         display.append("\n\nGantt Chart:\n");
 
         for (Integer i : chart) {
@@ -354,7 +357,6 @@ public class CPU_scheduling_algorithms extends JFrame {
     }
 
     public void roundrobin() {
-        display.append("\nQuantum: " + quantum);
 
         Queue<Integer> processQueue = new LinkedList<>();
         int current_time = 0;
