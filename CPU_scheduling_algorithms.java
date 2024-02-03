@@ -61,8 +61,17 @@ public class CPU_scheduling_algorithms extends JFrame {
     private void startSimulation() {
         algorithmComboBox = new JComboBox<>(new String[]{"Preemptive SJF", "Non Preemptive SJF", "Non Preemptive Priority", "Round Robin"});
 
-        // Get number of processes
-        numberOfProcesses = Integer.parseInt(processesTextField.getText());
+        // Validate number of processes
+        try {
+            numberOfProcesses = Integer.parseInt(processesTextField.getText());
+            if (numberOfProcesses <= 0) {
+                JOptionPane.showMessageDialog(null, "Number of processes should be greater than 0.");
+                return;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(null, "Invalid input for number of processes. Please enter a valid number.");
+            return;
+        }
 
         // Create a new frame for process details
         JFrame processDetailsFrame = new JFrame("Calculation");
@@ -145,6 +154,16 @@ public class CPU_scheduling_algorithms extends JFrame {
             } else if ("Preemptive SJF".equals(selectedAlgorithm)){
                 preemptiveSJF();
             } else if ("Round Robin".equals(selectedAlgorithm)){
+                try { // Validate quantum
+                    quantum = Integer.parseInt(quantumTextField.getText());
+                    if (quantum <= 0) {
+                        JOptionPane.showMessageDialog(null, "Quantum should be greater than 0.");
+                        return;
+                    }
+                } catch (NumberFormatException ex) {
+                    JOptionPane.showMessageDialog(null, "Invalid input for quantum. Please enter a valid number.");
+                    return;
+                }
                 roundrobin();
             }
             print();
@@ -177,11 +196,11 @@ public class CPU_scheduling_algorithms extends JFrame {
 
         display.append("\nTable: \n");
         display.append("------------------------------------------------------------------------------------------------------------------------------\n");
-        display.append("| Process\tArrival Time\tBurst Time\tFinish Time\tTurn Time\tWaiting Time\t|\n");
+        display.append("| Process\t| Arrival Time\t| Burst Time\t| Finish Time\t| Turn Time\t| Waiting Time\t|\n");
         display.append("------------------------------------------------------------------------------------------------------------------------------\n");
 
         for (int i = 0; i < numberOfProcesses; i++) {
-            display.append("| " + i + "\t" + arrivalTimes.get(i) + "\t" + burstTimes.get(i) + "\t" + finishTimes.get(i) + "\t" + turnTimes.get(i) + "\t" + waitTimes.get(i) + "\t"+ "|\n");
+            display.append("| " + i + "\t| " + arrivalTimes.get(i) + "\t| " + burstTimes.get(i) + "\t| " + finishTimes.get(i) + "\t| " + turnTimes.get(i) + "\t| " + waitTimes.get(i) + "\t"+ "|\n");
             display.append("------------------------------------------------------------------------------------------------------------------------------\n");
 
         }
@@ -193,7 +212,9 @@ public class CPU_scheduling_algorithms extends JFrame {
             avgwait_time += waitTimes.get(i);
         }
 
+        display.append("Total Turn around time: " + avgturn_time);
         display.append(String.format("Average Turn Around Time: %.2f\n", (avgturn_time/numberOfProcesses)));
+        display.append("Total Waiting time: " + avgwait_time);
         display.append(String.format("Average Wait Time: %.2f\n\n", (avgwait_time/numberOfProcesses)));
     }
 
@@ -333,8 +354,6 @@ public class CPU_scheduling_algorithms extends JFrame {
     }
 
     public void roundrobin() {
-        // Get number of processes
-        quantum = Integer.parseInt(quantumTextField.getText());
         display.append("\nQuantum: " + quantum);
 
         Queue<Integer> processQueue = new LinkedList<>();
