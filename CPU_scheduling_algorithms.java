@@ -27,6 +27,7 @@ public class CPU_scheduling_algorithms extends JFrame {
     private List<Integer> waitTimes = new ArrayList<>();
     private List<Integer> burstleft = new ArrayList<>();
     private List<Boolean> used = new ArrayList<>();
+    private List<Boolean> executedonce = new ArrayList<>();
 
     public CPU_scheduling_algorithms() {
         // Set up the main frame
@@ -174,6 +175,7 @@ public class CPU_scheduling_algorithms extends JFrame {
             burstleft.clear();
             newTimes.clear();
             used.clear();
+            executedonce.clear();
             chart.clear();
         }
     }
@@ -371,15 +373,33 @@ public class CPU_scheduling_algorithms extends JFrame {
 
         while (done != numberOfProcesses) {
             List<Integer> temp = new ArrayList<>();
+            int previndex = 0;
             for (int i = 0; i < numberOfProcesses; i++) {
-                if (arrivalTimes.get(i) <= time && !used.get(i)) {
-                    temp.add(i);
+                if (newTimes.get(i) <= time && !used.get(i)) {
+                    processQueue.add(i);
                     used.set(i, true);
                 }
             }
 
+            int n = processQueue.size();
+            for (int i = 0; i < n; i++) {
+                temp.add(processQueue.poll());
+                if (i == 0) {
+                    previndex = i;
+                } else {
+                    int x = temp.get(previndex);
+                    int y = temp.get(i);
+                    if (newTimes.get(y) == newTimes.get(x) && !executedonce.get(y)) {
+                        if (burstleft.get(y) < burstleft.get(x)) {
+                            temp.set(previndex, y);
+                            temp.set(i, x);
+                        }
+                    }
+                }
+            }
+
             // Sort temp based on burst time
-            temp.sort(Comparator.comparingInt(i -> burstleft.get(i)));
+            temp.sort(Comparator.comparingInt(i -> newTimes.get(i)));
 
             for (int i : temp) {
                 processQueue.add(i);
@@ -391,11 +411,14 @@ public class CPU_scheduling_algorithms extends JFrame {
                 if (burstleft.get(index) > quantum) {
                     burstleft.set(index, burstleft.get(index) - quantum);
                     time += quantum;
+                    newTimes.set(index, time);
+                    executedonce.set(index, true);
                     chart.add(index);
 
                 } else {
                     time += burstleft.get(index);
                     burstleft.set(index, 0);
+                    executedonce.set(index, true);
                     done++;
 
                     finishTimes.set(index, time);
@@ -405,7 +428,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 }
 
                 for (int i = 0; i < numberOfProcesses; i++) {
-                    if (burstleft.get(i) > 0 && arrivalTimes.get(i) <= time && !used.get(i)) {
+                    if (burstleft.get(i) > 0 && newTimes.get(i) <= time && !used.get(i)) {
                         processQueue.add(i);
                         used.set(i, true);
                     }
@@ -433,6 +456,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 burstTimes.add(Integer.parseInt(model.getValueAt(i, 2).toString()));
                 priorities.add(Integer.parseInt(model.getValueAt(i, 3).toString()));
                 used.add(false);
+                executedonce.add(false);
                 finishTimes.add(0);
                 turnTimes.add(0);
                 waitTimes.add(0);
