@@ -328,7 +328,7 @@ public class CPU_scheduling_algorithms extends JFrame {
             } else {
                 for (int i = 0; i < numberOfProcesses; i++) {
                     if (arrivalTimes.get(i) <= time && !used.get(i)) {
-                        if (burstTimes.get(i) < min) {
+                        if (burstleft.get(i) < min) {
                             min = burstleft.get(i);
                             index = i;
                         }
@@ -341,6 +341,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 int b = burstleft.get(index) - 1;
                 burstleft.set(index, b);
                 time++;
+                newTimes.set(index, time);
 
                 if (previndex != index) {
                     chart.add(index);
