@@ -39,7 +39,7 @@ public class CPU_scheduling_algorithms extends JFrame {
         // Create components
         processesTextField = new JTextField(5);
         JButton startButton = new JButton("Start");
-        startButton.setBackground(new Color (255, 102, 102));
+        startButton.setBackground(new Color(255, 255, 255));
         startButton.setFocusable(false);
 
         // Add action listener to the start button
@@ -57,14 +57,15 @@ public class CPU_scheduling_algorithms extends JFrame {
         startMenuPanel.add(new JLabel("Number of Processes:"));
         startMenuPanel.add(processesTextField);
         startMenuPanel.add(startButton, BorderLayout.SOUTH);
-        startMenuPanel.setBackground(new Color(0,255,255));
+        startMenuPanel.setBackground(new Color(203, 195, 227));
 
         add(startMenuPanel);
         setVisible(true);
     }
 
     private void startSimulation() {
-        algorithmComboBox = new JComboBox<>(new String[]{"Preemptive SJF", "Non Preemptive SJF", "Non Preemptive Priority", "Round Robin"});
+        algorithmComboBox = new JComboBox<>(
+                new String[] { "Preemptive SJF", "Non Preemptive SJF", "Non Preemptive Priority", "Round Robin" });
 
         // Validate number of processes
         try {
@@ -83,9 +84,10 @@ public class CPU_scheduling_algorithms extends JFrame {
         processDetailsFrame.setLayout(new FlowLayout());
         processDetailsFrame.setSize(700, 800);
         processDetailsFrame.setLocationRelativeTo(null);
+        processDetailsFrame.getContentPane().setBackground(new Color(203, 195, 227));
 
         // Create a table model for process details
-        DefaultTableModel tableModel = new DefaultTableModel(){
+        DefaultTableModel tableModel = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column != 0;
@@ -98,7 +100,7 @@ public class CPU_scheduling_algorithms extends JFrame {
 
         // Populate the table with rows based on the number of processes
         for (int i = 0; i < numberOfProcesses; i++) {
-            tableModel.addRow(new Object[]{String.format("P%d", i), "", "", ""});
+            tableModel.addRow(new Object[] { String.format("P%d", i), "", "", "" });
         }
 
         processTable = new JTable(tableModel);
@@ -113,16 +115,16 @@ public class CPU_scheduling_algorithms extends JFrame {
 
         JScrollPane tablescroll = new JScrollPane(processTable);
         tablescroll.setPreferredSize(new Dimension(400, 200));
-        tablescroll.setBorder( new TitledBorder("Process Table") );
-        tablescroll.setBackground(new Color (0,255,255));
+        tablescroll.setBorder(new TitledBorder("Process Table"));
+        tablescroll.setBackground(new Color(173, 216, 230));
 
         JScrollPane displayscroll = new JScrollPane(display);
         displayscroll.setPreferredSize(new Dimension(600, 475));
-        displayscroll.setBorder( new TitledBorder("Output:") );
-        displayscroll.setBackground(new Color (0,255,255));
+        displayscroll.setBorder(new TitledBorder("Output:"));
+        displayscroll.setBackground(new Color(173, 216, 230));
 
         JButton calculate = new JButton("Calculate");
-        calculate.setBackground(new Color (255, 102, 102));
+        calculate.setBackground(new Color(173, 216, 230));
         calculate.setFocusable(false);
 
         buttonPanel.add(new JLabel("Select Algorithm:"));
@@ -159,9 +161,9 @@ public class CPU_scheduling_algorithms extends JFrame {
                 nonpreemptiveSJF();
             } else if ("Non Preemptive Priority".equals(selectedAlgorithm)) {
                 nonpreemptivepriority();
-            } else if ("Preemptive SJF".equals(selectedAlgorithm)){
+            } else if ("Preemptive SJF".equals(selectedAlgorithm)) {
                 preemptiveSJF();
-            } else if ("Round Robin".equals(selectedAlgorithm)){
+            } else if ("Round Robin".equals(selectedAlgorithm)) {
                 try { // Validate quantum
                     quantum = Integer.parseInt(quantumTextField.getText());
                     if (quantum <= 0) {
@@ -209,13 +211,17 @@ public class CPU_scheduling_algorithms extends JFrame {
         }
 
         display.append("\nTable: \n");
-        display.append("------------------------------------------------------------------------------------------------------------------------------\n");
+        display.append(
+                "------------------------------------------------------------------------------------------------------------------------------\n");
         display.append("| Process\t| Arrival Time\t| Burst Time\t| Finish Time\t| Turn Time\t| Waiting Time\t|\n");
-        display.append("------------------------------------------------------------------------------------------------------------------------------\n");
+        display.append(
+                "------------------------------------------------------------------------------------------------------------------------------\n");
 
         for (int i = 0; i < numberOfProcesses; i++) {
-            display.append("| " + i + "\t| " + arrivalTimes.get(i) + "\t| " + burstTimes.get(i) + "\t| " + finishTimes.get(i) + "\t| " + turnTimes.get(i) + "\t| " + waitTimes.get(i) + "\t"+ "|\n");
-            display.append("------------------------------------------------------------------------------------------------------------------------------\n");
+            display.append("| " + i + "\t| " + arrivalTimes.get(i) + "\t| " + burstTimes.get(i) + "\t| "
+                    + finishTimes.get(i) + "\t| " + turnTimes.get(i) + "\t| " + waitTimes.get(i) + "\t" + "|\n");
+            display.append(
+                    "------------------------------------------------------------------------------------------------------------------------------\n");
 
         }
 
@@ -227,19 +233,19 @@ public class CPU_scheduling_algorithms extends JFrame {
         }
 
         display.append("Total Turn Around time: " + avgturn_time + "ms");
-        display.append(String.format("\nAverage Turn Around Time: %.2fms\n", (avgturn_time/numberOfProcesses)));
+        display.append(String.format("\nAverage Turn Around Time: %.2fms\n", (avgturn_time / numberOfProcesses)));
         display.append("Total Waiting time: " + avgwait_time + "ms");
-        display.append(String.format("\nAverage Waiting Time: %.2fms\n\n", (avgwait_time/numberOfProcesses)));
+        display.append(String.format("\nAverage Waiting Time: %.2fms\n\n", (avgwait_time / numberOfProcesses)));
     }
 
     public void nonpreemptiveSJF() {
         int time = 0;
         int done = 0;
-    
+
         while (done != numberOfProcesses) {
             int index = -1;
             int min = 1000;
-    
+
             for (int i = 0; i < numberOfProcesses; i++) {
                 if (arrivalTimes.get(i) <= time && !used.get(i)) {
                     if (burstTimes.get(i) < min) {
@@ -251,7 +257,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                     }
                 }
             }
-    
+
             if (index != -1) {
                 int finish = time + burstTimes.get(index);
                 finishTimes.set(index, finish);
@@ -259,7 +265,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 turnTimes.set(index, turn);
                 int wait = turnTimes.get(index) - burstTimes.get(index);
                 waitTimes.set(index, wait);
-    
+
                 used.set(index, true);
                 done++;
                 time = finishTimes.get(index);
@@ -273,11 +279,11 @@ public class CPU_scheduling_algorithms extends JFrame {
     public void nonpreemptivepriority() {
         int time = 0;
         int done = 0;
-    
+
         while (done != numberOfProcesses) {
             int index = -1;
             int min = 1000;
-    
+
             for (int i = 0; i < numberOfProcesses; i++) {
                 if (arrivalTimes.get(i) <= time && !used.get(i)) {
                     if (priorities.get(i) < min) {
@@ -292,7 +298,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                     }
                 }
             }
-    
+
             if (index != -1) {
                 int finish = time + burstTimes.get(index);
                 finishTimes.set(index, finish);
@@ -300,7 +306,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 turnTimes.set(index, turn);
                 int wait = turnTimes.get(index) - burstTimes.get(index);
                 waitTimes.set(index, wait);
-    
+
                 used.set(index, true);
                 done++;
                 time = finishTimes.get(index);
@@ -317,11 +323,11 @@ public class CPU_scheduling_algorithms extends JFrame {
         int done = 0;
         int previndex = -1;
         int start = 0;
-    
+
         while (done != numberOfProcesses) {
             int index = -1;
             int min = 1000;
-    
+
             if (start == 0) {
                 for (int i = 0; i < numberOfProcesses; i++) {
                     if (arrivalTimes.get(i) <= time && !used.get(i)) {
@@ -342,8 +348,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                     }
                 }
             }
-            
-    
+
             if (index != -1) {
                 int b = burstleft.get(index) - 1;
                 burstleft.set(index, b);
@@ -370,7 +375,7 @@ public class CPU_scheduling_algorithms extends JFrame {
         }
 
     }
-    
+
     public void roundrobin() {
 
         Queue<Integer> processQueue = new LinkedList<>();
