@@ -36,12 +36,11 @@ public class CPU_scheduling_algorithms extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
-
-
         // Create components
         processesTextField = new JTextField(5);
         JButton startButton = new JButton("Start");
         startButton.setBackground(new Color (255, 102, 102));
+        startButton.setFocusable(false);
 
         // Add action listener to the start button
         startButton.addActionListener(new ActionListener() {
@@ -54,7 +53,6 @@ public class CPU_scheduling_algorithms extends JFrame {
         // Create panel for start menu
         JPanel startMenuPanel = new JPanel();
         startMenuPanel.setLayout(new FlowLayout());
-        
 
         startMenuPanel.add(new JLabel("Number of Processes:"));
         startMenuPanel.add(processesTextField);
@@ -63,7 +61,6 @@ public class CPU_scheduling_algorithms extends JFrame {
 
         add(startMenuPanel);
         setVisible(true);
-
     }
 
     private void startSimulation() {
@@ -86,7 +83,7 @@ public class CPU_scheduling_algorithms extends JFrame {
         processDetailsFrame.setLayout(new FlowLayout());
         processDetailsFrame.setSize(700, 800);
         processDetailsFrame.setLocationRelativeTo(null);
-        
+
         // Create a table model for process details
         DefaultTableModel tableModel = new DefaultTableModel(){
             @Override
@@ -98,7 +95,7 @@ public class CPU_scheduling_algorithms extends JFrame {
         tableModel.addColumn("Arrival Time");
         tableModel.addColumn("Burst Time");
         tableModel.addColumn("Priority");
-        
+
         // Populate the table with rows based on the number of processes
         for (int i = 0; i < numberOfProcesses; i++) {
             tableModel.addRow(new Object[]{String.format("P%d", i), "", "", ""});
@@ -126,6 +123,7 @@ public class CPU_scheduling_algorithms extends JFrame {
 
         JButton calculate = new JButton("Calculate");
         calculate.setBackground(new Color (255, 102, 102));
+        calculate.setFocusable(false);
 
         buttonPanel.add(new JLabel("Select Algorithm:"));
         buttonPanel.add(algorithmComboBox);
@@ -141,13 +139,11 @@ public class CPU_scheduling_algorithms extends JFrame {
         processDetailsFrame.add(warning);
         processDetailsFrame.add(buttonPanel, BorderLayout.CENTER);
         processDetailsFrame.add(displayPanel, BorderLayout.SOUTH);
-        
 
         calculate.addActionListener(new CalculateListener());
 
         processDetailsFrame.setResizable(false);
         processDetailsFrame.setVisible(true);
-
     }
 
     // ActionListener class for the Calculate button
