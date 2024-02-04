@@ -341,7 +341,6 @@ public class CPU_scheduling_algorithms extends JFrame {
                 int b = burstleft.get(index) - 1;
                 burstleft.set(index, b);
                 time++;
-                newTimes.set(index, time);
 
                 if (previndex != index) {
                     chart.add(index);
