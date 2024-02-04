@@ -19,6 +19,7 @@ public class CPU_scheduling_algorithms extends JFrame {
     private int quantum;
     private List<Integer> chart = new ArrayList<>();
     private List<Integer> arrivalTimes = new ArrayList<>();
+    private List<Integer> newTimes = new ArrayList<>();
     private List<Integer> burstTimes = new ArrayList<>();
     private List<Integer> priorities = new ArrayList<>();
     private List<Integer> finishTimes = new ArrayList<>();
@@ -171,6 +172,7 @@ public class CPU_scheduling_algorithms extends JFrame {
             waitTimes.clear();
             turnTimes.clear();
             burstleft.clear();
+            newTimes.clear();
             used.clear();
             chart.clear();
         }
@@ -215,10 +217,10 @@ public class CPU_scheduling_algorithms extends JFrame {
             avgwait_time += waitTimes.get(i);
         }
 
-        display.append("Total Turn Around time: " + avgturn_time);
-        display.append(String.format("\nAverage Turn Around Time: %.2f\n", (avgturn_time/numberOfProcesses)));
-        display.append("Total Waiting time: " + avgwait_time);
-        display.append(String.format("\nAverage Waiting Time: %.2f\n\n", (avgwait_time/numberOfProcesses)));
+        display.append("Total Turn Around time: " + avgturn_time + "ms");
+        display.append(String.format("\nAverage Turn Around Time: %.2fms\n", (avgturn_time/numberOfProcesses)));
+        display.append("Total Waiting time: " + avgwait_time + "ms");
+        display.append(String.format("\nAverage Waiting Time: %.2fms\n\n", (avgwait_time/numberOfProcesses)));
     }
 
     public void nonpreemptiveSJF() {
@@ -334,10 +336,6 @@ public class CPU_scheduling_algorithms extends JFrame {
             
     
             if (index != -1) {
-                if (burstleft.get(index) == burstTimes.get(index)) {
-                    int temp = time;
-                    finishTimes.set(index, temp);
-                }
                 int b = burstleft.get(index) - 1;
                 burstleft.set(index, b);
                 time++;
@@ -363,20 +361,28 @@ public class CPU_scheduling_algorithms extends JFrame {
         }
 
     }
-
+    
     public void roundrobin() {
 
         Queue<Integer> processQueue = new LinkedList<>();
-        int current_time = 0;
-        int completed = 0;
+        int time = 0;
+        int done = 0;
         int index;
 
-        while (completed != numberOfProcesses) {
+        while (done != numberOfProcesses) {
+            List<Integer> temp = new ArrayList<>();
             for (int i = 0; i < numberOfProcesses; i++) {
-                if (burstleft.get(i) > 0 && arrivalTimes.get(i) <= current_time && !used.get(i)) {
-                    processQueue.add(i);
+                if (arrivalTimes.get(i) <= time && !used.get(i)) {
+                    temp.add(i);
                     used.set(i, true);
                 }
+            }
+
+            // Sort temp based on burst time
+            temp.sort(Comparator.comparingInt(i -> burstleft.get(i)));
+
+            for (int i : temp) {
+                processQueue.add(i);
             }
 
             if (!processQueue.isEmpty()) {
@@ -384,22 +390,22 @@ public class CPU_scheduling_algorithms extends JFrame {
 
                 if (burstleft.get(index) > quantum) {
                     burstleft.set(index, burstleft.get(index) - quantum);
-                    current_time += quantum;
+                    time += quantum;
                     chart.add(index);
 
                 } else {
-                    current_time += burstleft.get(index);
+                    time += burstleft.get(index);
                     burstleft.set(index, 0);
-                    completed++;
+                    done++;
 
-                    finishTimes.set(index, current_time);
+                    finishTimes.set(index, time);
                     turnTimes.set(index, finishTimes.get(index) - arrivalTimes.get(index));
                     waitTimes.set(index, turnTimes.get(index) - burstTimes.get(index));
                     chart.add(index);
                 }
 
                 for (int i = 0; i < numberOfProcesses; i++) {
-                    if (burstleft.get(i) > 0 && arrivalTimes.get(i) <= current_time && !used.get(i)) {
+                    if (burstleft.get(i) > 0 && arrivalTimes.get(i) <= time && !used.get(i)) {
                         processQueue.add(i);
                         used.set(i, true);
                     }
@@ -409,7 +415,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                     processQueue.add(index);
                 }
             } else {
-                current_time++;
+                time++;
             }
         }
     }
@@ -435,6 +441,7 @@ public class CPU_scheduling_algorithms extends JFrame {
                 return;
             }
             burstleft.add(burstTimes.get(i));
+            newTimes.add(arrivalTimes.get(i));
         }
     }
 
